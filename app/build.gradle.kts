@@ -70,6 +70,9 @@ dependencies {
     implementation(libs.kotlinx.serialization)
     implementation(libs.kotlinx.serialization.retrofit)
 
+    implementation(libs.glance)
+    implementation(libs.glance.appwidget)
+
     implementation(libs.dagger.hilt)
     kapt(libs.dagger.hilt.compiler)
 
