@@ -16,9 +16,11 @@ okhttp-logging-interceptor = "4.10.0"
 dagger-hilt = "2.46.1"
 android-hilt = "1.0.0"
 glance = "1.0.0-beta01"
+desugar_jdk_libs = "2.0.3"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
@@ -52,6 +54,7 @@ glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", versi
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinKapt = { id = "kotlin-kapt", version.ref = "kotlin" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 daggerHiltAndroidPlugin = { id = "dagger.hilt.android.plugin", version.ref = "dagger-hilt" }
 
 [bundles]
