@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.chagemann.currencywidget.data.ICurrencyRepository
 import de.chagemann.currencywidget.data.PricePairs
+import de.chagemann.currencywidget.ui.ConversionItemData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +37,8 @@ class MainViewModel @Inject constructor(
         ViewState(
             currencies = mapOf(),
             pricePairs = null,
-            baseCurrency = "eur"
+            baseCurrency = "eur",
+            conversionItemDataList = listOf()
         )
     )
     val viewState = _viewState.asStateFlow()
@@ -57,10 +59,37 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun onAction(action: UiAction) {
+        when (action) {
+            is UiAction.AddNewThingy -> TODO() // open picker to select 2 currency codes
+            is UiAction.OpenPicker -> TODO() // open picker to only select one currency code
+            is UiAction.SwapCurrency -> TODO() // swap values, persist
+            is UiAction.ShowDeletionDialog -> TODO() // show deletion dialog for a single item
+        }
+    }
+
     data class ViewState(
         val currencies: Map<String, String>,
         val pricePairs: PricePairs?,
-        val baseCurrency: String
+        val baseCurrency: String,
+        val conversionItemDataList: List<ConversionItemData>
     )
+
+    sealed class UiAction {
+        data class SwapCurrency(val conversionItemData: ConversionItemData) : UiAction()
+        data class OpenPicker(
+            val conversionItemData: ConversionItemData,
+            val origin: Origin
+        ) : UiAction() {
+            enum class Origin {
+                BASE_CURRENCY,
+                TARGET_CURRENCY
+            }
+        }
+
+        data class ShowDeletionDialog(val conversionItemData: ConversionItemData) : UiAction()
+
+        object AddNewThingy : UiAction()
+    }
 
 }
