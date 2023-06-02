@@ -4,16 +4,20 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import de.chagemann.currencywidget.MainViewModel
 
 @Composable
 fun ConversionItemList(
+    modifier: Modifier = Modifier,
     data: List<ConversionItemData>,
+    contentPadding: PaddingValues,
     onAction: (MainViewModel.UiAction) -> Unit,
 ) {
     LazyColumn(
-        contentPadding = PaddingValues(horizontal = 24.dp),
+        modifier = modifier,
+        contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         items(

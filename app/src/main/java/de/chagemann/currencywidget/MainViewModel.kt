@@ -10,6 +10,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -38,7 +39,14 @@ class MainViewModel @Inject constructor(
             currencies = mapOf(),
             pricePairs = null,
             baseCurrency = "eur",
-            conversionItemDataList = listOf()
+            conversionItemDataList = listOf(),
+            showDeletionDialogForItem = ConversionItemData(
+                itemUuid = UUID.randomUUID().toString(),
+                baseCurrencyCode = "PLN",
+                baseCurrencyAmount = 45.0,
+                targetCurrencyCode = "EUR",
+                exchangeRate = 0.22
+            )
         )
     )
     val viewState = _viewState.asStateFlow()
@@ -64,7 +72,13 @@ class MainViewModel @Inject constructor(
             is UiAction.AddNewThingy -> TODO() // open picker to select 2 currency codes
             is UiAction.OpenPicker -> TODO() // open picker to only select one currency code
             is UiAction.SwapCurrency -> TODO() // swap values, persist
-            is UiAction.ShowDeletionDialog -> TODO() // show deletion dialog for a single item
+            is UiAction.ShowDeletionDialog -> _viewState.tryEmit(
+                viewState.value.copy(showDeletionDialogForItem = action.conversionItemData)
+            )
+            is UiAction.DeleteItem -> TODO()
+            is UiAction.HideDeletionDialog -> _viewState.tryEmit(
+                viewState.value.copy(showDeletionDialogForItem = null)
+            )
         }
     }
 
@@ -72,7 +86,8 @@ class MainViewModel @Inject constructor(
         val currencies: Map<String, String>,
         val pricePairs: PricePairs?,
         val baseCurrency: String,
-        val conversionItemDataList: List<ConversionItemData>
+        val conversionItemDataList: List<ConversionItemData>,
+        val showDeletionDialogForItem: ConversionItemData? = null
     )
 
     sealed class UiAction {
@@ -88,6 +103,9 @@ class MainViewModel @Inject constructor(
         }
 
         data class ShowDeletionDialog(val conversionItemData: ConversionItemData) : UiAction()
+        object HideDeletionDialog : UiAction()
+
+        object DeleteItem : UiAction()
 
         object AddNewThingy : UiAction()
     }
