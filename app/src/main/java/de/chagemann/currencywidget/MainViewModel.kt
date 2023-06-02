@@ -3,7 +3,6 @@ package de.chagemann.currencywidget
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.chagemann.currencywidget.data.ICurrencyRepository
-import de.chagemann.currencywidget.data.PricePairs
 import de.chagemann.currencywidget.ui.ConversionItemData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -36,9 +35,6 @@ class MainViewModel @Inject constructor(
 
     private val _viewState = MutableStateFlow(
         ViewState(
-            currencies = mapOf(),
-            pricePairs = null,
-            baseCurrency = "eur",
             conversionItemDataList = listOf(),
             showDeletionDialogForItem = ConversionItemData(
                 itemUuid = UUID.randomUUID().toString(),
@@ -57,20 +53,14 @@ class MainViewModel @Inject constructor(
         coroutineScope.launch {
             val pricePairs = currencyRepository.fetchPricePairs(lowercaseBaseCurrency)
             if (pricePairs != null) {
-                _viewState.tryEmit(
-                    viewState.value.copy(
-                        pricePairs = pricePairs,
-                        baseCurrency = lowercaseBaseCurrency
-                    )
-                )
             }
         }
     }
 
     fun onAction(action: UiAction) {
         when (action) {
-            is UiAction.AddNewThingy -> TODO() // open picker to select 2 currency codes
-            is UiAction.OpenPicker -> TODO() // open picker to only select one currency code
+            is UiAction.AddNewThingy -> _viewState.tryEmit(viewState.value.copy(showDialog = true)) // open picker to select 2 currency codes
+            is UiAction.OpenPicker -> _viewState.tryEmit(viewState.value.copy(showDialog = true)) // open picker to only select one currency code
             is UiAction.SwapCurrency -> TODO() // swap values, persist
             is UiAction.ShowDeletionDialog -> _viewState.tryEmit(
                 viewState.value.copy(showDeletionDialogForItem = action.conversionItemData)
@@ -83,11 +73,9 @@ class MainViewModel @Inject constructor(
     }
 
     data class ViewState(
-        val currencies: Map<String, String>,
-        val pricePairs: PricePairs?,
-        val baseCurrency: String,
         val conversionItemDataList: List<ConversionItemData>,
-        val showDeletionDialogForItem: ConversionItemData? = null
+        val showDeletionDialogForItem: ConversionItemData? = null,
+        val showDialog: Boolean = false
     )
 
     sealed class UiAction {

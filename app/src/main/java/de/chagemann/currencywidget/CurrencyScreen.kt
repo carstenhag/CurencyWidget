@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import de.chagemann.currencywidget.ui.ConversionItemData
 import de.chagemann.currencywidget.ui.ConversionItemList
+import de.chagemann.currencywidget.ui.currencyselection.CurrencySelectionModal
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.UUID
 
@@ -95,6 +96,10 @@ fun CurrencyScreen(
                 text = { Text(text = "Do you want to delete this conversion item? You can just re-add it when needed.") },
             )
         }
+
+        if (state.value.showDialog) {
+            CurrencySelectionModal()
+        }
     }
 }
 
@@ -138,9 +143,6 @@ fun CurrencyScreenPreview(
 ) {
     val state = MutableStateFlow(
         MainViewModel.ViewState(
-            currencies = mapOf(),
-            pricePairs = null,
-            baseCurrency = "EUR",
             conversionItemDataList = data
         )
     ).collectAsState()
@@ -162,9 +164,6 @@ fun CurrencyScreenDeletionDialogPreview() {
     )
     val state = MutableStateFlow(
         MainViewModel.ViewState(
-            currencies = mapOf(),
-            pricePairs = null,
-            baseCurrency = "EUR",
             conversionItemDataList = listOf(),
             showDeletionDialogForItem = plnToEur
         )
