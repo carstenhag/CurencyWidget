@@ -30,7 +30,7 @@ fun AddFirstConversionItem(
 ) {
     Card(
         onClick = {
-            onAction(MainViewModel.UiAction.AddNewThingy)
+            onAction(MainViewModel.UiAction.OpenPickerForNewItem)
         },
         modifier = modifier.fillMaxWidth()
     ) {
@@ -70,7 +70,7 @@ fun AddFurtherConversionItem(
 ) {
     Card(
         onClick = {
-            onAction(MainViewModel.UiAction.AddNewThingy)
+            onAction(MainViewModel.UiAction.OpenPickerForNewItem)
         },
         modifier = modifier.fillMaxWidth()
     ) {

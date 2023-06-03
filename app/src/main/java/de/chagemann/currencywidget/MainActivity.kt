@@ -7,7 +7,9 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import dagger.hilt.android.AndroidEntryPoint
+import de.chagemann.currencywidget.data.UserDataModel
 import de.chagemann.currencywidget.ui.theme.CurrencyWidgetTheme
+import kotlinx.collections.immutable.persistentListOf
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -17,6 +19,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val userData = viewModel.userDataFlow.collectAsState(UserDataModel(persistentListOf()))
             val state = viewModel.viewState.collectAsState()
             CurrencyWidgetTheme {
                 LaunchedEffect(key1 = "") {
@@ -24,6 +27,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 CurrencyScreen(
+                    userData = userData,
                     state = state,
                     onAction = { action -> viewModel.onAction(action) }
                 )

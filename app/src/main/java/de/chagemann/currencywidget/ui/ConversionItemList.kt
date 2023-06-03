@@ -7,11 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import de.chagemann.currencywidget.MainViewModel
+import de.chagemann.currencywidget.data.ConversionItemData
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun ConversionItemList(
     modifier: Modifier = Modifier,
-    data: List<ConversionItemData>,
+    data: ImmutableList<ConversionItemData>,
     contentPadding: PaddingValues,
     onAction: (MainViewModel.UiAction) -> Unit,
 ) {

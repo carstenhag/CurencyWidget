@@ -1,0 +1,14 @@
+syntax = "proto3";
+option java_package = "de.chagemann.currencywidget.data";
+option java_multiple_files = true;
+
+message UserDataEntity {
+  repeated ConversionItemEntity conversionItemEntity = 1;
+}
+
+message ConversionItemEntity {
+    string itemUuid = 1;
+    string baseCurrencyCode = 2;
+    double baseCurrencyAmount = 3;
+    string targetCurrencyCode = 4;
+}

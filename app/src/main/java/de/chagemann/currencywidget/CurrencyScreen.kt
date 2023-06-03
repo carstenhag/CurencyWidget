@@ -28,15 +28,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import de.chagemann.currencywidget.ui.ConversionItemData
+import de.chagemann.currencywidget.data.ConversionItemData
+import de.chagemann.currencywidget.data.UserDataModel
 import de.chagemann.currencywidget.ui.ConversionItemList
 import de.chagemann.currencywidget.ui.currencyselection.CurrencySelectionModal
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CurrencyScreen(
+    userData: State<UserDataModel>,
     state: State<MainViewModel.ViewState>,
     onAction: (MainViewModel.UiAction) -> Unit,
 ) {
@@ -48,7 +51,7 @@ fun CurrencyScreen(
                     Text(text = stringResource(id = R.string.app_name))
                 },
                 actions = {
-                    IconButton(onClick = { onAction(MainViewModel.UiAction.AddNewThingy) }) {
+                    IconButton(onClick = { onAction(MainViewModel.UiAction.OpenPickerForNewItem) }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_add),
                             contentDescription = "Add",
@@ -72,7 +75,7 @@ fun CurrencyScreen(
                         .background(MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.7f)),
                 )
                 ConversionItemList(
-                    data = state.value.conversionItemDataList,
+                    data = userData.value.conversionItemDataList,
                     contentPadding = PaddingValues(24.dp),
                     onAction = onAction
                 )
@@ -99,7 +102,7 @@ fun CurrencyScreen(
 
         CurrencySelectionModal(
             parentOnAction = onAction,
-            isVisible = state.value.showPicker
+            isVisible = state.value.pickerState !is MainViewModel.ViewState.PickerState.PickerClosed
         )
     }
 }
@@ -109,15 +112,21 @@ class ConversionItemDataListProvider : PreviewParameterProvider<List<ConversionI
         itemUuid = UUID.randomUUID().toString(),
         baseCurrencyCode = "PLN",
         baseCurrencyAmount = 45.0,
+        formattedBaseCurrencyAmount = "123",
         targetCurrencyCode = "EUR",
-        exchangeRate = 0.22
+        exchangeRate = 0.22,
+        targetCurrencyAmount = 123.0,
+        formattedTargetCurrencyAmount = "123",
     )
     private val eurToUsd = ConversionItemData(
         itemUuid = UUID.randomUUID().toString(),
         baseCurrencyCode = "EUR",
         baseCurrencyAmount = 23.4,
+        formattedBaseCurrencyAmount = "123",
         targetCurrencyCode = "USD",
-        exchangeRate = 1.21
+        exchangeRate = 1.21,
+        targetCurrencyAmount = 123.0,
+        formattedTargetCurrencyAmount = "123",
     )
 
     override val values: Sequence<List<ConversionItemData>>
@@ -142,14 +151,16 @@ class ConversionItemDataListProvider : PreviewParameterProvider<List<ConversionI
 fun CurrencyScreenPreview(
     @PreviewParameter(ConversionItemDataListProvider::class) data: List<ConversionItemData>
 ) {
+    val userData = MutableStateFlow(UserDataModel(persistentListOf())).collectAsState()
     val state = MutableStateFlow(
         MainViewModel.ViewState(
-            conversionItemDataList = data
+            conversionItemDataList = data,
+            pickerState = MainViewModel.ViewState.PickerState.PickerOpenForNewItem
         )
     ).collectAsState()
 
     MaterialTheme {
-        CurrencyScreen(state = state, onAction = {})
+        CurrencyScreen(userData, state = state, onAction = {})
     }
 }
 
@@ -160,17 +171,22 @@ fun CurrencyScreenDeletionDialogPreview() {
         itemUuid = UUID.randomUUID().toString(),
         baseCurrencyCode = "PLN",
         baseCurrencyAmount = 45.0,
+        formattedBaseCurrencyAmount = "123",
         targetCurrencyCode = "EUR",
-        exchangeRate = 0.22
+        exchangeRate = 0.22,
+        targetCurrencyAmount = 123.0,
+        formattedTargetCurrencyAmount = "123",
     )
+    val userData = MutableStateFlow(UserDataModel(persistentListOf())).collectAsState()
     val state = MutableStateFlow(
         MainViewModel.ViewState(
             conversionItemDataList = listOf(),
-            showDeletionDialogForItem = plnToEur
+            showDeletionDialogForItem = plnToEur,
+            pickerState = MainViewModel.ViewState.PickerState.PickerOpenForNewItem
         )
     ).collectAsState()
 
     MaterialTheme {
-        CurrencyScreen(state = state, onAction = {})
+        CurrencyScreen(userData, state = state, onAction = {})
     }
 }

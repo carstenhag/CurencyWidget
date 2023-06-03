@@ -5,6 +5,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import de.chagemann.currencywidget.business.FormattingUtils
+import de.chagemann.currencywidget.business.IFormattingUtils
 import de.chagemann.currencywidget.data.PricePairsDto
 import de.chagemann.currencywidget.data.PricePairsDtoDeserializer
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -40,5 +42,10 @@ class UtilsModule {
     @Provides
     fun provideDispatcherProvider(): IDispatcherProvider {
         return DispatcherProvider()
+    }
+
+    @Provides
+    fun provideFormattingUtils(): IFormattingUtils {
+        return FormattingUtils()
     }
 }

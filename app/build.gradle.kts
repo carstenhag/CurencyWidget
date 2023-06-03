@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     id(libs.plugins.kotlinKapt.get().pluginId)
     alias(libs.plugins.daggerHiltAndroidPlugin)
+    alias(libs.plugins.protobuf)
 }
 
 android {
@@ -74,6 +75,8 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kotlinx.serialization)
     implementation(libs.kotlinx.serialization.retrofit)
+    implementation(libs.androidx.datastore)
+    implementation(libs.protobuf.javalite)
 
     implementation(libs.glance)
     implementation(libs.glance.appwidget)
@@ -99,4 +102,33 @@ dependencies {
 
 kapt {
     correctErrorTypes = true
+}
+
+protobuf {
+    // Configures the Protobuf compilation and the protoc executable
+    protoc {
+        // Downloads from the repositories
+        artifact = "com.google.protobuf:protoc:3.23.2"
+    }
+
+    // Generates the java Protobuf-lite code for the Protobufs in this project
+    // https://github.com/zhaobozhen/LibChecker/blob/c0c3bc7c661fe45cc44d5c6ab0202764652e0b7e/app/build.gradle.kts
+    generateProtoTasks {
+        all().forEach {
+            it.builtins {
+                create("java") {
+                    option("lite")
+                }
+            }
+
+            /*
+            it.plugins {
+                create("grpc") {
+                    option("lite")
+                }
+            }
+
+             */
+        }
+    }
 }

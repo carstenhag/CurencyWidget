@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.chagemann.currencywidget.MainViewModel
 import de.chagemann.currencywidget.R
+import de.chagemann.currencywidget.data.ConversionItemData
 import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,7 +57,7 @@ fun ConversionItem(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = conversionItemData.baseCurrencyAmount.toString(),
+                        text = conversionItemData.formattedBaseCurrencyAmount,
                         style = MaterialTheme.typography.bodyLarge,
                         fontSize = 24.sp,
                     )
@@ -119,10 +120,12 @@ class ConversionItemDataProvider : PreviewParameterProvider<ConversionItemData> 
         itemUuid = UUID.randomUUID().toString(),
         baseCurrencyCode = "PLN",
         baseCurrencyAmount = 45.0,
+        formattedBaseCurrencyAmount = "123",
         targetCurrencyCode = "EUR",
-        exchangeRate = 0.22
+        exchangeRate = 0.22,
+        targetCurrencyAmount = 123.0,
+        formattedTargetCurrencyAmount = "123",
     )
-
     override val values: Sequence<ConversionItemData>
         get() = sequenceOf(
             plnToEur,
@@ -130,29 +133,4 @@ class ConversionItemDataProvider : PreviewParameterProvider<ConversionItemData> 
         )
 }
 
-data class ConversionItemData constructor(
-    val itemUuid: String,
-    val baseCurrencyCode: String,
-    val baseCurrencyAmount: Double,
-    val targetCurrencyCode: String,
-    val exchangeRate: Double,
-) {
-    private val targetCurrencyAmount: Double
-        get() = baseCurrencyAmount * exchangeRate
 
-    val formattedTargetCurrencyAmount: String
-        get() = String.format("%.6f", targetCurrencyAmount)
-
-    val itemSubline: String
-        get() = "1 $baseCurrencyCode = $formattedTargetCurrencyAmount $targetCurrencyCode"
-
-    fun swapCurrencies(): ConversionItemData {
-        return ConversionItemData(
-            itemUuid = itemUuid,
-            baseCurrencyCode = targetCurrencyCode,
-            baseCurrencyAmount = baseCurrencyAmount * exchangeRate,
-            targetCurrencyCode = baseCurrencyCode,
-            exchangeRate = 1 / exchangeRate
-        )
-    }
-}
