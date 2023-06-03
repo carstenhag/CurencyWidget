@@ -66,10 +66,12 @@ dependencies {
     implementation(libs.ui)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
+    implementation(libs.material)
     implementation(libs.material3)
     implementation(libs.coroutines.core)
     implementation(libs.retrofit)
     implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kotlinx.serialization)
     implementation(libs.kotlinx.serialization.retrofit)
 

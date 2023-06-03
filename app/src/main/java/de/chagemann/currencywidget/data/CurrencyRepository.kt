@@ -1,5 +1,7 @@
 package de.chagemann.currencywidget.data
 
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.toImmutableMap
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -7,11 +9,11 @@ import javax.inject.Inject
 class CurrencyRepository @Inject constructor(
     private val currencyApi: ICurrencyApi
 ) : ICurrencyRepository {
-    override suspend fun fetchCurrencies(): Map<String, String> {
+    override suspend fun fetchCurrencies(): ImmutableMap<String, String>? {
         val result = runCatching {
             currencyApi.getCurrencyList()
         }
-        return result.getOrNull() ?: return mapOf()
+        return result.getOrNull()?.toImmutableMap()
     }
 
     override suspend fun fetchPricePairs(baseCurrency: String): PricePairs? {

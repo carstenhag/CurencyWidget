@@ -59,8 +59,8 @@ class MainViewModel @Inject constructor(
 
     fun onAction(action: UiAction) {
         when (action) {
-            is UiAction.AddNewThingy -> _viewState.tryEmit(viewState.value.copy(showDialog = true)) // open picker to select 2 currency codes
-            is UiAction.OpenPicker -> _viewState.tryEmit(viewState.value.copy(showDialog = true)) // open picker to only select one currency code
+            is UiAction.AddNewThingy -> _viewState.tryEmit(viewState.value.copy(showPicker = true)) // open picker to select 2 currency codes
+            is UiAction.OpenPicker -> _viewState.tryEmit(viewState.value.copy(showPicker = true)) // open picker to only select one currency code
             is UiAction.SwapCurrency -> TODO() // swap values, persist
             is UiAction.ShowDeletionDialog -> _viewState.tryEmit(
                 viewState.value.copy(showDeletionDialogForItem = action.conversionItemData)
@@ -69,13 +69,14 @@ class MainViewModel @Inject constructor(
             is UiAction.HideDeletionDialog -> _viewState.tryEmit(
                 viewState.value.copy(showDeletionDialogForItem = null)
             )
+            is UiAction.HidePicker -> _viewState.tryEmit(viewState.value.copy(showPicker = false))
         }
     }
 
     data class ViewState(
         val conversionItemDataList: List<ConversionItemData>,
         val showDeletionDialogForItem: ConversionItemData? = null,
-        val showDialog: Boolean = false
+        val showPicker: Boolean = false
     )
 
     sealed class UiAction {
@@ -89,6 +90,7 @@ class MainViewModel @Inject constructor(
                 TARGET_CURRENCY
             }
         }
+        object HidePicker : UiAction()
 
         data class ShowDeletionDialog(val conversionItemData: ConversionItemData) : UiAction()
         object HideDeletionDialog : UiAction()

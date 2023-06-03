@@ -3,8 +3,11 @@ package de.chagemann.currencywidget.ui.currencyselection
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.chagemann.currencywidget.IDispatcherProvider
+import de.chagemann.currencywidget.data.CurrencyCodeProvider
 import de.chagemann.currencywidget.data.ICurrencyRepository
 import de.chagemann.currencywidget.ui.currencyselection.CurrencySelectionViewModel.ViewState.CurrenciesState
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,7 +53,9 @@ class CurrencySelectionViewModel @Inject constructor(
         _viewState.tryEmit(viewState.value.copy(currenciesState = CurrenciesState.Loading))
         coroutineScope.launch {
             val result = runCatching { currencyRepository.fetchCurrencies() }
-            val currencies = result.getOrNull()
+            val currencies = result.getOrNull()?.filter {
+                it.key.uppercase() in CurrencyCodeProvider.currencyCodeAllowlist
+            }?.toImmutableMap()
 
             val state = if (currencies == null) {
                 CurrenciesState.Error
@@ -67,7 +72,7 @@ class CurrencySelectionViewModel @Inject constructor(
         sealed class CurrenciesState {
             object Loading : CurrenciesState()
             object Error : CurrenciesState()
-            data class Data(val currencies: Map<String, String>) : CurrenciesState()
+            data class Data(val currencies: ImmutableMap<String, String>) : CurrenciesState()
         }
     }
 

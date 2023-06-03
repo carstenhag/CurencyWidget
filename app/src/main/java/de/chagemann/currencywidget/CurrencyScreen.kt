@@ -97,9 +97,10 @@ fun CurrencyScreen(
             )
         }
 
-        if (state.value.showDialog) {
-            CurrencySelectionModal()
-        }
+        CurrencySelectionModal(
+            parentOnAction = onAction,
+            isVisible = state.value.showPicker
+        )
     }
 }
 
