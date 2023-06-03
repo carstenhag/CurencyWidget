@@ -37,17 +37,19 @@ fun ConversionItem(
 ) {
     Card(
         onClick = {},
-        modifier = modifier
-            .fillMaxWidth()
-            .pointerInput("") {
-                detectTapGestures(
-                    onLongPress = {
-                        onAction(MainViewModel.UiAction.ShowDeletionDialog(conversionItemData))
-                    }
-                )
-            },
+        modifier = modifier.fillMaxWidth(),
     ) {
-        Column(modifier = Modifier.padding(24.dp)) {
+        Column(
+            modifier = Modifier
+                .pointerInput(conversionItemData) {
+                    detectTapGestures(
+                        onLongPress = {
+                            onAction(MainViewModel.UiAction.ShowDeletionDialog(conversionItemData))
+                        }
+                    )
+                }
+                .padding(24.dp),
+        ) {
             Row(
                 modifier = modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -79,7 +81,8 @@ fun ConversionItem(
                 }
                 Column(
                     modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally) {
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
                     Text(
                         text = conversionItemData.formattedTargetCurrencyAmount,
                         style = MaterialTheme.typography.bodyLarge,

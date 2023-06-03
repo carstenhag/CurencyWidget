@@ -48,8 +48,6 @@ class MainViewModel @Inject constructor(
 
         coroutineScope.launch {
             val pricePairs = currencyRepository.fetchPricePairs(lowercaseBaseCurrency)
-            if (pricePairs != null) {
-            }
         }
     }
 
@@ -59,12 +57,10 @@ class MainViewModel @Inject constructor(
                 coroutineScope.launch {
                     currencyRepository.addConversionItem("EUR", 10.0, "USD")
                 }
-
                 /*
                 _viewState.tryEmit(
                    viewState.value.copy(pickerState = ViewState.PickerState.PickerOpenForNewItem)
                 )
-
                  */
             }
             is UiAction.OpenPicker -> _viewState.tryEmit(
@@ -79,7 +75,13 @@ class MainViewModel @Inject constructor(
             is UiAction.ShowDeletionDialog -> _viewState.tryEmit(
                 viewState.value.copy(showDeletionDialogForItem = action.conversionItemData)
             )
-            is UiAction.DeleteItem -> TODO()
+            is UiAction.DeleteItem -> {
+                coroutineScope.launch {
+                    val deletionItem = viewState.value.showDeletionDialogForItem ?: return@launch
+                    currencyRepository.deleteConversionItem(deletionItem)
+                    _viewState.tryEmit(viewState.value.copy(showDeletionDialogForItem = null))
+                }
+            }
             is UiAction.HideDeletionDialog -> _viewState.tryEmit(
                 viewState.value.copy(showDeletionDialogForItem = null)
             )
@@ -89,7 +91,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    data class ViewState constructor(
+    data class ViewState(
         val conversionItemDataList: List<ConversionItemData>,
         val showDeletionDialogForItem: ConversionItemData? = null,
         val pickerState: PickerState,
@@ -108,6 +110,7 @@ class MainViewModel @Inject constructor(
 
     sealed class UiAction {
         data class SwapCurrency(val conversionItemData: ConversionItemData) : UiAction()
+
         data class OpenPicker(
             val conversionItemData: ConversionItemData,
             val origin: Origin
@@ -118,14 +121,13 @@ class MainViewModel @Inject constructor(
             }
         }
 
+        object OpenPickerForNewItem : UiAction()
         object HidePicker : UiAction()
 
         data class ShowDeletionDialog(val conversionItemData: ConversionItemData) : UiAction()
         object HideDeletionDialog : UiAction()
 
         object DeleteItem : UiAction()
-
-        object OpenPickerForNewItem : UiAction()
     }
 
 }

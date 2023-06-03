@@ -16,4 +16,6 @@ interface ICurrencyRepository {
         baseCurrencyAmount: Double,
         targetCurrencyCode: String,
     )
+
+    suspend fun deleteConversionItem(deletionItem: ConversionItemData)
 }

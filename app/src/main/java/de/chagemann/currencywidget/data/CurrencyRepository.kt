@@ -57,6 +57,15 @@ class CurrencyRepository @Inject constructor(
         }
     }
 
+    override suspend fun deleteConversionItem(deletionItem: ConversionItemData) {
+        dataStore.updateData { userDataEntity ->
+            val index = userDataEntity.conversionItemEntityList.indexOfFirst {
+                it.itemUuid == deletionItem.itemUuid
+            }
+            userDataEntity.toBuilder().removeConversionItemEntity(index).build()
+        }
+    }
+
     private fun PricePairsDto.toBusinessObject(): PricePairs {
         return PricePairs(
             date = LocalDate.parse(this.date),
