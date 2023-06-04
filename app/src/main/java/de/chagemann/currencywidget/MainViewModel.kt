@@ -71,7 +71,9 @@ class MainViewModel @Inject constructor(
                     )
                 )
             )
-            is UiAction.SwapCurrency -> TODO() // swap values, persist
+            is UiAction.SwapCurrency -> coroutineScope.launch {
+                currencyRepository.swapConversionItem(action.conversionItemData)
+            }
             is UiAction.ShowDeletionDialog -> _viewState.tryEmit(
                 viewState.value.copy(showDeletionDialogForItem = action.conversionItemData)
             )

@@ -17,5 +17,7 @@ interface ICurrencyRepository {
         targetCurrencyCode: String,
     )
 
+    suspend fun swapConversionItem(item: ConversionItemData)
+
     suspend fun deleteConversionItem(deletionItem: ConversionItemData)
 }

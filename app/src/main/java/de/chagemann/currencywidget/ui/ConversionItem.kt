@@ -132,7 +132,7 @@ class ConversionItemDataProvider : PreviewParameterProvider<ConversionItemData> 
     override val values: Sequence<ConversionItemData>
         get() = sequenceOf(
             plnToEur,
-            plnToEur.copy(itemUuid = UUID.randomUUID().toString()).swapCurrencies(),
+            plnToEur.copy(itemUuid = UUID.randomUUID().toString()).copyAndSwapCurrencies(),
         )
 }
 

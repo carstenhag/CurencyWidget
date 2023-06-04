@@ -135,11 +135,11 @@ class ConversionItemDataListProvider : PreviewParameterProvider<List<ConversionI
             listOf(plnToEur),
             listOf(
                 plnToEur,
-                plnToEur.copy(itemUuid = UUID.randomUUID().toString()).swapCurrencies()
+                plnToEur.copy(itemUuid = UUID.randomUUID().toString()).copyAndSwapCurrencies()
             ),
             listOf(
                 plnToEur,
-                plnToEur.copy(itemUuid = UUID.randomUUID().toString()).swapCurrencies(),
+                plnToEur.copy(itemUuid = UUID.randomUUID().toString()).copyAndSwapCurrencies(),
                 eurToUsd
             ),
         )

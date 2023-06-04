@@ -15,18 +15,16 @@ data class ConversionItemData(
     val itemSubline: String
         get() = "1 $baseCurrencyCode = $formattedTargetCurrencyAmount $targetCurrencyCode"
 
-
-    // TODO: Remove this
-    fun swapCurrencies(): ConversionItemData {
+    fun copyAndSwapCurrencies(): ConversionItemData {
         return ConversionItemData(
             itemUuid = itemUuid,
             baseCurrencyCode = targetCurrencyCode,
             baseCurrencyAmount = baseCurrencyAmount * exchangeRate,
-            formattedBaseCurrencyAmount = "123",
+            formattedBaseCurrencyAmount = formattedTargetCurrencyAmount,
             targetCurrencyCode = baseCurrencyCode,
             exchangeRate = 1 / exchangeRate,
-            targetCurrencyAmount = 0.0,
-            formattedTargetCurrencyAmount = "123"
+            targetCurrencyAmount = targetCurrencyAmount * (1/exchangeRate),
+            formattedTargetCurrencyAmount = formattedBaseCurrencyAmount,
         )
     }
 }

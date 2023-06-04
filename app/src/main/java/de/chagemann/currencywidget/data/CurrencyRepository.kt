@@ -34,7 +34,7 @@ class CurrencyRepository @Inject constructor(
 
     override val userData: Flow<UserDataModel>
         get() = dataStore.data.map {
-            it.toModel(formattingUtils, 1.45)
+            it.toModel(formattingUtils, 1.07)
         }
 
     override suspend fun addConversionItem(
@@ -51,19 +51,41 @@ class CurrencyRepository @Inject constructor(
                     .setBaseCurrencyCode(baseCurrencyCode)
                     .setBaseCurrencyAmount(baseCurrencyAmount)
                     .setTargetCurrencyCode(targetCurrencyCode)
-                    .setBaseCurrencyCode(baseCurrencyCode)
                     .build()
             ).build()
         }
     }
 
+    override suspend fun swapConversionItem(item: ConversionItemData) {
+        val swappedItem = item.copyAndSwapCurrencies()
+
+        dataStore.updateData { userDataEntity ->
+            val index = conversionItemDataIndexOf(userDataEntity, item)
+            val conversionItemEntity = userDataEntity.getConversionItemEntity(index)
+            val updatedConversionItemEntity = conversionItemEntity.toBuilder()
+                .setBaseCurrencyCode(swappedItem.baseCurrencyCode)
+                .setBaseCurrencyAmount(swappedItem.baseCurrencyAmount)
+                .setTargetCurrencyCode(swappedItem.targetCurrencyCode)
+
+            userDataEntity
+                .toBuilder()
+                .setConversionItemEntity(index, updatedConversionItemEntity)
+                .build()
+        }
+    }
+
     override suspend fun deleteConversionItem(deletionItem: ConversionItemData) {
         dataStore.updateData { userDataEntity ->
-            val index = userDataEntity.conversionItemEntityList.indexOfFirst {
-                it.itemUuid == deletionItem.itemUuid
-            }
+            val index = conversionItemDataIndexOf(userDataEntity, deletionItem)
             userDataEntity.toBuilder().removeConversionItemEntity(index).build()
         }
+    }
+
+    private fun conversionItemDataIndexOf(
+        userDataEntity: UserDataEntity,
+        deletionItem: ConversionItemData
+    ) = userDataEntity.conversionItemEntityList.indexOfFirst {
+        it.itemUuid == deletionItem.itemUuid
     }
 
     private fun PricePairsDto.toBusinessObject(): PricePairs {
